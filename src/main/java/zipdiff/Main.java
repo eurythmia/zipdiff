@@ -5,20 +5,13 @@
  */
 package zipdiff;
 
+import org.apache.commons.cli.*;
+import zipdiff.output.Builder;
+import zipdiff.output.BuilderFactory;
+
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-
-import zipdiff.output.Builder;
-import zipdiff.output.BuilderFactory;
 
 /**
  * Provides a command line interface to zipdiff
@@ -147,20 +140,11 @@ public class Main {
 		try {
 			CommandLine line = parser.parse(options, args);
 
-			String filename1 = null;
-			String filename2 = null;
-
-			filename1 = line.getOptionValue(OPTION_FILE1);
-			filename2 = line.getOptionValue(OPTION_FILE2);
-
-			File f1 = new File(filename1);
-			File f2 = new File(filename2);
+            File f1 = new File(line.getOptionValue(OPTION_FILE1));
+			File f2 = new File(line.getOptionValue(OPTION_FILE2));
 
 			checkFile(f1);
 			checkFile(f2);
-
-			System.out.println("File 1 = " + f1);
-			System.out.println("File 2 = " + f2);
 
 			DifferenceCalculator calc = new DifferenceCalculator(f1, f2);
 
@@ -179,8 +163,6 @@ public class Main {
 
 			calc.setNumberOfPrefixesToSkip1(numberOfPrefixesToSkip1);
 			calc.setNumberOfPrefixesToSkip2(numberOfPrefixesToSkip2);
-
-			String regularExpression = null;
 
 			// todo - calc.setFilenamesToIgnore();
 
@@ -203,8 +185,8 @@ public class Main {
 			}
 
 			if (line.hasOption(OPTION_REGEX)) {
-				regularExpression = line.getOptionValue(OPTION_REGEX);
-				Set regexSet = new HashSet();
+				String regularExpression = line.getOptionValue(OPTION_REGEX);
+				Set<String> regexSet = new HashSet<>();
 				regexSet.add(regularExpression);
 
 				calc.setFilenameRegexToIgnore(regexSet);

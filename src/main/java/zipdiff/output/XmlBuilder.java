@@ -7,7 +7,6 @@ package zipdiff.output;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.Iterator;
 import java.util.Set;
 
 import zipdiff.Differences;
@@ -51,62 +50,18 @@ public class XmlBuilder extends AbstractBuilder {
 		pw.println("\">");
 
 		pw.println("<differences>");
-		writeAdded(pw, d.getAdded().keySet());
-		writeRemoved(pw, d.getRemoved().keySet());
-		writeChanged(pw, d.getChanged().keySet());
+        writeStatusTags(pw, "added", d.getAdded().keySet());
+        writeStatusTags(pw, "removed", d.getRemoved().keySet());
+        writeStatusTags(pw, "changed", d.getChanged().keySet());
 		pw.println("</differences>");
 		pw.println("</zipdiff>");
 
 		pw.flush();
 	}
 
-	/**
-	 * writes the list of added files
-	 *
-	 * @param pw    write to write to
-	 * @param added set of added files
-	 */
-	protected void writeAdded(PrintWriter pw, Set added) {
-		Iterator iter = added.iterator();
-		while (iter.hasNext()) {
-			String key = (String) iter.next();
-			pw.print("<added>");
-			pw.print(key);
-			pw.println("</added>");
-		}
-
-	}
-
-	/**
-	 * writes the list of removed files
-	 *
-	 * @param pw    write to write to
-	 * @param removed set of removed files
-	 */
-	protected void writeRemoved(PrintWriter pw, Set removed) {
-		Iterator iter = removed.iterator();
-		while (iter.hasNext()) {
-			String key = (String) iter.next();
-			pw.print("<removed>");
-			pw.print(key);
-			pw.println("</removed>");
-		}
-	}
-
-	/**
-	 * writes the list of modified files
-	 *
-	 * @param pw    write to write to
-	 * @param changed set of modified files
-	 */
-	protected void writeChanged(PrintWriter pw, Set changed) {
-		Iterator iter = changed.iterator();
-		while (iter.hasNext()) {
-			String key = (String) iter.next();
-			pw.print("<changed>");
-			pw.print(key);
-			pw.println("</changed>");
-		}
-	}
-
+    protected void writeStatusTags(PrintWriter pw, String statusTag, Set<String> modified) {
+        for(String key : modified) {
+            pw.print(String.format("<%s>%s</%s>",statusTag,key,statusTag));
+        }
+    }
 }

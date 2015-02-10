@@ -29,9 +29,10 @@ public abstract class AbstractBuilder implements Builder {
 	 * @param d differences
 	 * @throws IOException in case of an input/output error
 	 */
+    @Override
 	public void build(String filename, int numberOfPrefixesToSkip, Differences d) throws IOException {
 		this.numberOfOutputPrefixesToSkip = numberOfPrefixesToSkip;
-		OutputStream os = null;
+		OutputStream os;
 		if ((filename == null) || filename.equals("-")) {
 			os = System.out;
 		} else {

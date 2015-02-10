@@ -5,9 +5,7 @@
  */
 package zipdiff;
 
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 
@@ -17,13 +15,11 @@ import java.util.zip.ZipEntry;
  * @author Sean C. Sullivan
  */
 public class Differences {
-	private final Map added = new TreeMap();
+	private final Map<String,ZipEntry> added = new TreeMap<>();
 
-	private final Map removed = new TreeMap();
+	private final Map<String,ZipEntry> removed = new TreeMap<>();
 
-	private final Map changed = new TreeMap();
-
-	private final Map ignored = new TreeMap();
+	private final Map<String,ZipEntry[]> changed = new TreeMap<>();
 
 	private String filename1;
 
@@ -57,10 +53,6 @@ public class Differences {
 		removed.put(fqn, ze);
 	}
 
-	public void fileIgnored(String fqn, ZipEntry ze) {
-		ignored.put(fqn, ze);
-	}
-
 	public void fileChanged(String fqn, ZipEntry z1, ZipEntry z2) {
 		ZipEntry[] entries = new ZipEntry[2];
 		entries[0] = z1;
@@ -68,20 +60,16 @@ public class Differences {
 		changed.put(fqn, entries);
 	}
 
-	public Map getAdded() {
+	public Map<String,ZipEntry> getAdded() {
 		return added;
 	}
 
-	public Map getRemoved() {
+	public Map<String, ZipEntry> getRemoved() {
 		return removed;
 	}
 
-	public Map getChanged() {
+	public Map<String,ZipEntry[]> getChanged() {
 		return changed;
-	}
-
-	public Map getIgnored() {
-		return ignored;
 	}
 
 	public boolean hasDifferences() {
@@ -90,53 +78,26 @@ public class Differences {
 
 	@Override
     public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
-		if (added.size() == 1) {
-			sb.append("1 file was");
-		} else {
-			sb.append(added.size() + " files were");
-		}
-		sb.append(" added to " + this.getFilename2() + "\n");
+        sb.append(String.format("%d file(s) added to %s\n", added.size(), getFilename2()));
+        for(String key : added.keySet()) {
+            sb.append(String.format("\t[added] %s\n", key));
+        }
 
-		Iterator iter = added.keySet().iterator();
-		while (iter.hasNext()) {
-			String name = (String) iter.next();
-			sb.append("\t[added] " + name + "\n");
-		}
+        sb.append(String.format("%d file(s) removed from %s\n", removed.size(), getFilename2()));
+        for(String key : removed.keySet()) {
+            sb.append(String.format("\t[removed] %s\n", key));
+        }
 
-		if (removed.size() == 1) {
-			sb.append("1 file was");
-		} else {
-			sb.append(removed.size() + " files were");
-		}
-		sb.append(" removed from " + this.getFilename2() + "\n");
+        sb.append(String.format("%d file(s) changed\n", removed.size()));
+        for(String key : changed.keySet()) {
+            ZipEntry[] entries = changed.get(key);
+            sb.append(String.format("\t[changed] %s (size: %d : %d)\n", key, entries[0].getSize(), entries[1].getSize()));
+        }
 
-		iter = removed.keySet().iterator();
-		while (iter.hasNext()) {
-			String name = (String) iter.next();
-			sb.append("\t[removed] " + name + "\n");
-		}
-
-		if (changed.size() == 1) {
-			sb.append("1 file changed\n");
-		} else {
-			sb.append(changed.size() + " files changed\n");
-		}
-
-		Set keys = getChanged().keySet();
-		iter = keys.iterator();
-		while (iter.hasNext()) {
-			String name = (String) iter.next();
-			ZipEntry[] entries = (ZipEntry[]) getChanged().get(name);
-			sb.append("\t[changed] " + name + " ");
-			sb.append(" ( size " + entries[0].getSize());
-			sb.append(" : " + entries[1].getSize());
-			sb.append(" )\n");
-		}
 		int differenceCount = added.size() + changed.size() + removed.size();
-
-		sb.append("Total differences: " + differenceCount);
+		sb.append(String.format("Total differences: %d", differenceCount));
 		return sb.toString();
 	}
 
