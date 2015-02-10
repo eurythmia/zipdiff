@@ -6,4 +6,4 @@ bin
 junit-reports
 .idea
 .gradle
-zipdiff.iml
+*.iml
