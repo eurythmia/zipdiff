@@ -5,19 +5,17 @@
  */
 package zipdiff.output;
 
+import zipdiff.Differences;
+import zipdiff.util.StringUtil;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
-
-import zipdiff.Differences;
-import zipdiff.util.StringUtil;
 
 /**
  * creates a zip file with the new versions of files that have been added or modified
@@ -27,7 +25,7 @@ import zipdiff.util.StringUtil;
 public class ZipBuilder extends AbstractBuilder {
 	private Differences differences;
 
-	private final Set filenames = new TreeSet();
+	private final Set<String> filenames = new TreeSet<>();
 
 	/**
 	 * builds the output
@@ -52,28 +50,20 @@ public class ZipBuilder extends AbstractBuilder {
 	 * collects all the files that have been added in the second zip archive
 	 */
 	private void collectAddedFiles() {
-		Set entrySet = differences.getAdded().entrySet();
-		Iterator itr = entrySet.iterator();
-		while (itr.hasNext()) {
-			Map.Entry mapEntry = (Map.Entry) itr.next();
-			if (mapEntry.getKey().toString().indexOf("!") < 0) {
-				filenames.add(((ZipEntry) mapEntry.getValue()).getName());
-			}
-		}
+        for(String key : differences.getAdded().keySet()) {
+            if (!key.contains("!"))
+                filenames.add(key);
+        }
 	}
 
 	/**
 	 * collects all the files that have been added modified in the second zip archive
 	 */
 	private void collectModifiedFiles() {
-		Set entrySet = differences.getChanged().entrySet();
-		Iterator itr = entrySet.iterator();
-		while (itr.hasNext()) {
-			Map.Entry mapEntry = (Map.Entry) itr.next();
-			if (mapEntry.getKey().toString().indexOf("!") < 0) {
-				filenames.add(((ZipEntry[]) mapEntry.getValue())[1].getName());
-			}
-		}
+        for(String key : differences.getChanged().keySet()) {
+            if (!key.contains("!"))
+                filenames.add(key);
+        }
 	}
 
 	/**
@@ -85,18 +75,16 @@ public class ZipBuilder extends AbstractBuilder {
 	private void copyEntries(OutputStream out) throws IOException {
 		ZipOutputStream os = new ZipOutputStream(out);
 		ZipFile zipFile = new ZipFile(differences.getFilename2());
-		Iterator itr = filenames.iterator();
 
-		while (itr.hasNext()) {
-			String filename = (String) itr.next();
-			ZipEntry zipEntry = zipFile.getEntry(filename);
-			InputStream is = zipFile.getInputStream(zipEntry);
-			ZipEntry z = new ZipEntry(StringUtil.removeDirectoryPrefix(filename, numberOfOutputPrefixesToSkip));
-			os.putNextEntry(z);
-			copyStream(is, os);
-			os.closeEntry();
-			is.close();
-		}
+        for(String filename : filenames) {
+            ZipEntry zipEntry = zipFile.getEntry(filename);
+            InputStream is = zipFile.getInputStream(zipEntry);
+            ZipEntry z = new ZipEntry(StringUtil.removeDirectoryPrefix(filename, numberOfOutputPrefixesToSkip));
+            os.putNextEntry(z);
+            copyStream(is, os);
+            os.closeEntry();
+            is.close();
+        }
 
 		zipFile.close();
 		os.close();

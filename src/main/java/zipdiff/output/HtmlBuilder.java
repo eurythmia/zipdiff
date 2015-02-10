@@ -5,12 +5,11 @@
  */
 package zipdiff.output;
 
+import zipdiff.Differences;
+
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.util.Iterator;
 import java.util.Set;
-
-import zipdiff.Differences;
 
 /**
  * Generates html output for a Differences instance
@@ -78,7 +77,7 @@ public class HtmlBuilder extends AbstractBuilder {
 	 * @param pw    write to write to
 	 * @param added set of added files
 	 */
-	protected void writeAdded(PrintWriter pw, Set added) {
+	protected void writeAdded(PrintWriter pw, Set<String> added) {
 		writeDiffSet(pw, "Added", added);
 	}
 
@@ -88,7 +87,7 @@ public class HtmlBuilder extends AbstractBuilder {
 	 * @param pw    write to write to
 	 * @param removed set of removed files
 	 */
-	protected void writeRemoved(PrintWriter pw, Set removed) {
+	protected void writeRemoved(PrintWriter pw, Set<String> removed) {
 		writeDiffSet(pw, "Removed", removed);
 	}
 
@@ -98,7 +97,7 @@ public class HtmlBuilder extends AbstractBuilder {
 	 * @param pw    write to write to
 	 * @param changed set of modified files
 	 */
-	protected void writeChanged(PrintWriter pw, Set changed) {
+	protected void writeChanged(PrintWriter pw, Set<String> changed) {
 		writeDiffSet(pw, "Changed", changed);
 	}
 
@@ -109,7 +108,7 @@ public class HtmlBuilder extends AbstractBuilder {
 	 * @param name  heading
 	 * @param s     set
 	 */
-	protected void writeDiffSet(PrintWriter pw, String name, Set s) {
+	protected void writeDiffSet(PrintWriter pw, String name, Set<String> s) {
 		pw.println("<TABLE CELLSPACING=\"1\" CELLPADDING=\"3\" WIDTH=\"100%\" BORDER=\"0\">");
 		pw.println("<tr>");
 		pw.println("<td class=\"diffs\" colspan=\"2\">" + name + " (" + s.size() + " entries)</td>");
@@ -120,9 +119,7 @@ public class HtmlBuilder extends AbstractBuilder {
 		pw.println("<td>");
 		if (s.size() > 0) {
 			pw.println("<ul>");
-			Iterator iter = s.iterator();
-			while (iter.hasNext()) {
-				String key = (String) iter.next();
+            for(String key : s){
 				pw.print("<li>");
 				pw.print(key);
 				pw.println("</li>");
@@ -141,29 +138,26 @@ public class HtmlBuilder extends AbstractBuilder {
 	 * @return content of style-tag
 	 */
 	protected String getStyleTag() {
-		StringBuffer sb = new StringBuffer();
 
-		sb.append("<style type=\"text/css\">");
-		sb.append(" body, p { ");
-		sb.append(" font-family: verdana,arial,helvetica; ");
-		sb.append(" font-size: 80%; ");
-		sb.append(" color:#000000; ");
-		sb.append(" } \n");
-		sb.append(" 	  .diffs { \n");
-		sb.append("         font-family: verdana,arial,helvetica; \n");
-		sb.append("         font-size: 80%; \n");
-		sb.append(" font-weight: bold; \n");
-		sb.append(" text-align:left; \n");
-		sb.append(" background:#a6caf0; \n");
-		sb.append(" } \n");
-		sb.append(" tr, td { \n");
-		sb.append(" font-family: verdana,arial,helvetica; \n");
-		sb.append(" font-size: 80%; \n");
-		sb.append(" background:#eeeee0; \n");
-		sb.append(" } \n");
-		sb.append(" </style>\n");
-
-		return sb.toString();
+		return "<style type=\"text/css\">" +
+		" body, p { " +
+		" font-family: verdana,arial,helvetica; " +
+		" font-size: 80%; " +
+		" color:#000000; " +
+		" } \n" +
+		" 	  .diffs { \n" +
+		"         font-family: verdana,arial,helvetica; \n" +
+		"         font-size: 80%; \n" +
+		" font-weight: bold; \n" +
+		" text-align:left; \n" +
+		" background:#a6caf0; \n" +
+		" } \n" +
+		" tr, td { \n" +
+		" font-family: verdana,arial,helvetica; \n" +
+		" font-size: 80%; \n" +
+		" background:#eeeee0; \n" +
+		" } \n" +
+		" </style>\n";
 	}
 
 }

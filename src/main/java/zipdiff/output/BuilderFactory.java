@@ -19,7 +19,7 @@ public class BuilderFactory {
 	 * @return Builder
 	 */
 	public static Builder create(String filename) {
-		Builder builder = null;
+		Builder builder;
 
 		if ((filename == null) || filename.equals("-")) {
 			builder = new TextBuilder();
