@@ -198,11 +198,7 @@ public class Main {
 			}
 
 			Differences d = calc.getDifferences();
-
-			if (line.hasOption(OPTION_OUTPUT_FILE)) {
-				String outputFilename = line.getOptionValue(OPTION_OUTPUT_FILE);
-				writeOutputFile(outputFilename, numberOfOutputPrefixesToSkip, d);
-			}
+            writeOutputFile(line.getOptionValue(OPTION_OUTPUT_FILE), numberOfOutputPrefixesToSkip, d);
 
 
 			if (d.hasDifferences()) {
