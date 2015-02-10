@@ -7,9 +7,7 @@ package zipdiff;
 
 import zipdiff.util.StringUtil;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -251,21 +249,16 @@ public class DifferenceCalculator {
 	}
 
 	/**
-	 * Returns true if the filename has a valid zip extension.
-	 * i.e. jar, war, ear, zip etc.
+	 * Returns true if the file iz a zip format
 	 * @param filename The name of the file to check.
-	 * @return true if it has a valid extension.
+	 * @return true if file is a valid zip
 	 */
-	public static boolean isZipFile(String filename) {
-		if (filename == null) {
-			return false;
-		}
-			String lcn = filename.toLowerCase();
-			return lcn.endsWith(".zip") ||
-			lcn.endsWith(".ear") ||
-			lcn.endsWith(".war") ||
-			lcn.endsWith(".rar") ||
-			lcn.endsWith(".jar");
+	public static boolean isZipFile(String filename){
+        try {
+            return new ZipInputStream(new FileInputStream(filename)).getNextEntry() != null;
+        } catch(IOException e) {
+            return false;
+        }
 	}
 
 	/**
