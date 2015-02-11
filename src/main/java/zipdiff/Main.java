@@ -14,20 +14,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Provides a command line interface to zipdiff
+ * Provides a command line interface to zipdiff-ng
  *
- * @author Sean C. Sullivan, J.Stewart, Hendrik Brummermann
+ * @author Sean C. Sullivan, J.Stewart, Hendrik Brummermann, Aaron Cripps
  */
 public class Main {
-	private static final int EXITCODE_ERROR = 2;
 
-	private static final int EXITCODE_DIFF = 1;
+
 
 	private static final String OPTION_COMPARE_CRC_VALUES = "comparecrcvalues";
 
 	private static final String OPTION_COMPARE_TIMESTAMPS = "comparetimestamps";
-
-	private static final String OPTION_IGNORE_CVS_FILES = "ignorecvsfiles";
 
 	private static final String OPTION_OUTPUT_FILE = "outputfile";
 
@@ -42,10 +39,6 @@ public class Main {
 	private static final String OPTION_SKIP_PREFIX2 = "skipprefixes2";
 
 	private static final String OPTION_REGEX = "regex";
-
-	private static final String OPTION_EXIT_WITH_ERROR_ON_DIFF = "exitwitherrorondifference";
-
-	private static final String OPTION_VERBOSE = "verbose";
 
 	private static final Options options;
 
@@ -81,13 +74,6 @@ public class Main {
 		Option regex = new Option(OPTION_REGEX, OPTION_REGEX, true, "regular expression to match files to exclude e.g. (?i)meta-inf.*");
 		regex.setRequired(false);
 
-		Option ignoreCVSFilesOption = new Option(OPTION_IGNORE_CVS_FILES, OPTION_IGNORE_CVS_FILES, false, "ignore CVS files");
-		ignoreCVSFilesOption.setRequired(false);
-
-		Option exitWithError = new Option(OPTION_EXIT_WITH_ERROR_ON_DIFF, OPTION_EXIT_WITH_ERROR_ON_DIFF, false, "if a difference is found then exit with error " + EXITCODE_DIFF);
-
-		Option verboseOption = new Option(OPTION_VERBOSE, OPTION_VERBOSE, false, "verbose mode");
-
 		options.addOption(compareTS);
 		options.addOption(compareCRC);
 		options.addOption(file1);
@@ -96,9 +82,6 @@ public class Main {
 		options.addOption(numberOfPrefixesToSkip1);
 		options.addOption(numberOfPrefixesToSkip2);
 		options.addOption(regex);
-		options.addOption(ignoreCVSFilesOption);
-		options.addOption(exitWithError);
-		options.addOption(verboseOption);
 		options.addOption(outputFileOption);
 	}
 
@@ -114,7 +97,7 @@ public class Main {
 	 * @param args The command line parameters
 	 *
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception{
 		CommandLineParser parser = new GnuParser();
 
 		try {
@@ -149,12 +132,6 @@ public class Main {
 				calc.setCompareCRCValues(false);
 			}
 
-			if (line.hasOption(OPTION_IGNORE_CVS_FILES)) {
-				calc.setIgnoreCVSFiles(true);
-			} else {
-				calc.setIgnoreCVSFiles(false);
-			}
-
 			if (line.hasOption(OPTION_COMPARE_TIMESTAMPS)) {
 				calc.setIgnoreTimestamps(false);
 			} else {
@@ -169,36 +146,13 @@ public class Main {
 				calc.setFilenameRegexToIgnore(regexSet);
 			}
 
-			boolean exitWithErrorOnDiff = false;
-			if (line.hasOption(OPTION_EXIT_WITH_ERROR_ON_DIFF)) {
-				exitWithErrorOnDiff = true;
-			}
-
 			Differences d = calc.getDifferences();
             writeOutputFile(line.getOptionValue(OPTION_OUTPUT_FILE), numberOfOutputPrefixesToSkip, d);
-
-
-			if (d.hasDifferences()) {
-				if (line.hasOption(OPTION_VERBOSE)) {
-					System.out.println(d);
-					System.out.println(d.getFilename1() + " and " + d.getFilename2() + " are different.");
-				}
-				if (exitWithErrorOnDiff) {
-					System.exit(EXITCODE_DIFF);
-				}
-			} else {
-				System.out.println("No differences found.");
-			}
 		} catch (ParseException pex) {
 			System.err.println(pex.getMessage());
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp("zipdiff.Main [options] ", options);
-			System.exit(EXITCODE_ERROR);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			System.exit(EXITCODE_ERROR);
 		}
-
 	}
 
 }
