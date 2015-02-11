@@ -102,26 +102,6 @@ public class Main {
 		options.addOption(outputFileOption);
 	}
 
-	private static void checkFile(java.io.File f) {
-		String filename = f.toString();
-
-		if (!f.exists()) {
-			System.err.println("'" + filename + "' does not exist");
-			System.exit(EXITCODE_ERROR);
-		}
-
-		if (!f.canRead()) {
-			System.err.println("'" + filename + "' is not readable");
-			System.exit(EXITCODE_ERROR);
-		}
-
-		if (f.isDirectory()) {
-			System.err.println("'" + filename + "' is a directory");
-			System.exit(EXITCODE_ERROR);
-		}
-
-	}
-
 	private static void writeOutputFile(String filename, int numberOfOutputPrefixesToSkip, Differences d) throws java.io.IOException {
 		Builder builder = BuilderFactory.create(filename);
 		builder.build(filename, numberOfOutputPrefixesToSkip, d);
@@ -142,9 +122,6 @@ public class Main {
 
             File f1 = new File(line.getOptionValue(OPTION_FILE1));
 			File f2 = new File(line.getOptionValue(OPTION_FILE2));
-
-			checkFile(f1);
-			checkFile(f2);
 
 			DifferenceCalculator calc = new DifferenceCalculator(f1, f2);
 
