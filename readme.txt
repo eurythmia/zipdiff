@@ -1,6 +1,6 @@
 ZipDiff-ng is a fork of ZipDiff with the intention of modernizing
-and simplifying the tool, as well as removing external dependencies.
-One of the primary motivations for this is to make the code easily auditable.
+and simplifying the tool.
+
 -----------------------------------------------------------------------------
 
 ZipDiff compares two zip files and creates a list of differences. Plain text, .xml, .html and even a .zip file are supported as output formats.

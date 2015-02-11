@@ -36,9 +36,7 @@ public class DifferenceCalculator {
 
 	private int numberOfPrefixesToSkip2 = 0;
 
-	private boolean ignoreTimestamps = false;
-
-	private boolean ignoreCVSFiles = false;
+	private boolean useTimeStamps = false;
 
 	private boolean compareCRCValues = true;
 
@@ -74,6 +72,7 @@ public class DifferenceCalculator {
 	 * then that ZipEntry will be ignored from the comparison.
 	 * @see java.util.regex
 	 */
+    //Dead code ... I want to bring this back to life later.
 	public void setFilenameRegexToIgnore(Set<String> patterns) {
 		if (patterns == null) {
 			filesToIgnorePattern = null;
@@ -91,16 +90,13 @@ public class DifferenceCalculator {
 
 	/**
 	 * returns true if fileToIgnorePattern matches the filename given.
-	 * @param filepath a file path
 	 * @param entryName The name of the file to check to see if it should be ignored.
 	 * @return true if the file should be ignored.
 	 */
-	protected boolean ignoreThisFile(String filepath, String entryName) {
+	protected boolean ignoreThisFile(String entryName) {
 		if (entryName == null) {
 			return false;
-		} else if (isCVSFile(filepath, entryName) && (ignoreCVSFiles())) {
-			return true;
-		} else if (filesToIgnorePattern == null) {
+		}  else if (filesToIgnorePattern == null) {
 			return false;
 		} else {
 			Matcher m = filesToIgnorePattern.matcher(entryName);
@@ -110,10 +106,6 @@ public class DifferenceCalculator {
 			}
 			return match;
 		}
-	}
-
-	protected boolean isCVSFile(String filepath, String entryName) {
-        return (entryName != null) && ((filepath.contains("CVS/")) || (entryName.contains("CVS/")));
 	}
 
 	/**
@@ -216,7 +208,7 @@ public class DifferenceCalculator {
 	 * @throws IOException
 	 */
 	protected void processZipEntry(String prefix, ZipEntry zipEntry, InputStream is, Map<String,ZipEntry> zipEntryMap, int p) throws IOException {
-		if (ignoreThisFile(prefix, zipEntry.getName())) {
+		if (ignoreThisFile(zipEntry.getName())) {
 			logger.log(Level.FINE, "ignoring file: " + zipEntry.getName());
 		} else {
 			String name = StringUtil.removeDirectoryPrefix(prefix + zipEntry.getName(), p);
@@ -325,7 +317,7 @@ public class DifferenceCalculator {
 
 		result = (entry1.isDirectory() == entry2.isDirectory()) && (entry1.getSize() == entry2.getSize()) && (entry1.getCompressedSize() == entry2.getCompressedSize());
 
-		if (!isIgnoringTimestamps()) {
+		if (isUsingTimestamps()) {
 			result = result && (entry1.getTime() == entry2.getTime());
 		}
 
@@ -335,20 +327,12 @@ public class DifferenceCalculator {
 		return result;
 	}
 
-	public void setIgnoreTimestamps(boolean b) {
-		ignoreTimestamps = b;
+	public void useTimestamps(boolean b) {
+		useTimeStamps = b;
 	}
 
-	public boolean isIgnoringTimestamps() {
-		return ignoreTimestamps;
-	}
-
-	public boolean ignoreCVSFiles() {
-		return ignoreCVSFiles;
-	}
-
-	public void setIgnoreCVSFiles(boolean b) {
-		ignoreCVSFiles = b;
+	public boolean isUsingTimestamps() {
+		return useTimeStamps;
 	}
 
 	/**
