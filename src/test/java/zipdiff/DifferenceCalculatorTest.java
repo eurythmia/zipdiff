@@ -129,11 +129,6 @@ public class DifferenceCalculatorTest extends TestCase {
 		data1[data1.length - 1] = 'b';
 		testJarOS.write(data1);
 
-		// add another entry
-        String ENTRY_CVS = "CVS/Root";
-        JarEntry cvs = new JarEntry(ENTRY_CVS);
-		testJarOS.putNextEntry(cvs);
-
 		testJarOS.flush();
 		testJarOS.close();
 	}
