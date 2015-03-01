@@ -42,7 +42,7 @@ public class Main {
         calc.setNumberOfPrefixesToSkip2(cliArgs.getComparePrefixesToSkip());
         calc.setCompareCRCValues(cliArgs.useCRCvalues());
         calc.useTimestamps(cliArgs.useTStamp());
-//        calc.setFilenameFilter(cliArgs.getFilter());
+        calc.setFilenameFilter(cliArgs.getFilter());
 
         Differences d = calc.getDifferences();
         // TODO: use File instead of passing down strings ... Stringly typed vars are bad
