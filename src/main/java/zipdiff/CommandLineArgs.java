@@ -28,6 +28,9 @@ public class CommandLineArgs {
     @Parameter(names = {"-ts"}, description = "compare using time stamp")
     private boolean compareTStamp = false;
 
+    @Parameter(names = {"-filter"}, description = "regex of filenames to check")
+    private String filenameFilter = ".*";
+
     @Parameter(names = {"--help", "-help"}, help = true)
     private boolean help = false;
 
@@ -57,6 +60,10 @@ public class CommandLineArgs {
 
     public boolean useTStamp() {
         return compareTStamp;
+    }
+
+    public String getFilter() {
+        return filenameFilter;
     }
 
     public boolean isHelp() {

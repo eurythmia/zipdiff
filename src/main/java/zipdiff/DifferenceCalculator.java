@@ -40,7 +40,7 @@ public class DifferenceCalculator {
 
 	private boolean compareCRCValues = true;
 
-	private Pattern filesToIgnorePattern;
+    private Pattern fileFilterPattern;
 
 	/**
 	 * Constructor taking 2 filenames to compare
@@ -66,27 +66,10 @@ public class DifferenceCalculator {
 		file2 = zf2;
 	}
 
-	/**
-	 *
-	 * @param patterns A set of regular expressions that when matched against a ZipEntry
-	 * then that ZipEntry will be ignored from the comparison.
-	 * @see java.util.regex
-	 */
-    //Dead code ... I want to bring this back to life later.
-	public void setFilenameRegexToIgnore(Set<String> patterns) {
-		if (patterns == null) {
-			filesToIgnorePattern = null;
-		} else if (patterns.isEmpty()) {
-			filesToIgnorePattern = null;
-		} else {
-			String regex = "";
-            for(String pattern : patterns) {
-                regex += (!regex.isEmpty()) ? (String.format("|(%s)",pattern)):(String.format("(%s)",pattern));
-            }
-			filesToIgnorePattern = Pattern.compile(regex);
-			logger.log(Level.FINE, "Regular expression is : " + regex);
-		}
-	}
+    public void setFilenameFilter(String regex) {
+        fileFilterPattern = Pattern.compile(regex);
+        logger.log(Level.FINE, "Regular expression is : " + regex);
+    }
 
 	/**
 	 * returns true if fileToIgnorePattern matches the filename given.
@@ -94,15 +77,12 @@ public class DifferenceCalculator {
 	 * @return true if the file should be ignored.
 	 */
 	protected boolean ignoreThisFile(String entryName) {
-		if (entryName == null) {
-			return false;
-		}  else if (filesToIgnorePattern == null) {
+		if (entryName == null || fileFilterPattern == null) {
 			return false;
 		} else {
-			Matcher m = filesToIgnorePattern.matcher(entryName);
-			boolean match = m.matches();
-			if (match) {
-				logger.log(Level.FINEST, "Found a match against : " + entryName + " so excluding");
+            boolean match = fileFilterPattern.matcher(entryName).matches();
+			if (!match) {
+				logger.log(Level.FINEST, String.format("%s does not match filter, excluding", entryName));
 			}
 			return match;
 		}
@@ -184,34 +164,14 @@ public class DifferenceCalculator {
 	 * @param is The InputStream of the corresponding ZipEntry.
 	 * @param zipEntryMap The Map in which to place all the ZipEntries into. The key will
 	 * be the name of the ZipEntry.
+	 * @param prefixDirsToSkip number of directory prefixes to skip
 	 * @throws IOException
 	 */
-    @Deprecated
-	protected void processZipEntry(String prefix, ZipEntry zipEntry, InputStream is, Map<String,ZipEntry> zipEntryMap) throws IOException {
-		processZipEntry(prefix, zipEntry, is, zipEntryMap, 0);
-	}
-
-
-	/**
-	 * Will place ZipEntries for a given ZipEntry into the given Map. More ZipEntries will result
-	 * if zipEntry is itself a ZipFile. All embedded ZipFiles will be processed with their names
-	 * prefixed onto the names of their ZipEntries.
-	 * @param prefix The prefix of the ZipEntry that should be added to the key. Typically used
-	 * when processing embedded ZipFiles. The name of the embedded ZipFile would be the prefix of
-	 * all the embedded ZipEntries.
-	 * @param zipEntry The ZipEntry to place into the Map. If it is a ZipFile then all its ZipEntries
-	 * will also be placed in the Map.
-	 * @param is The InputStream of the corresponding ZipEntry.
-	 * @param zipEntryMap The Map in which to place all the ZipEntries into. The key will
-	 * be the name of the ZipEntry.
-	 * @param p number of directory prefixes to skip
-	 * @throws IOException
-	 */
-	protected void processZipEntry(String prefix, ZipEntry zipEntry, InputStream is, Map<String,ZipEntry> zipEntryMap, int p) throws IOException {
+	protected void processZipEntry(String prefix, ZipEntry zipEntry, InputStream is, Map<String,ZipEntry> zipEntryMap, int prefixDirsToSkip) throws IOException {
 		if (ignoreThisFile(zipEntry.getName())) {
 			logger.log(Level.FINE, "ignoring file: " + zipEntry.getName());
 		} else {
-			String name = StringUtil.removeDirectoryPrefix(prefix + zipEntry.getName(), p);
+			String name = StringUtil.removeDirectoryPrefix(prefix + zipEntry.getName(), prefixDirsToSkip);
 			if ((name == null) || name.equals("")) {
 				return;
 			}
@@ -233,7 +193,7 @@ public class DifferenceCalculator {
 		ZipEntry entry = zis.getNextEntry();
 
 		while (entry != null) {
-			processZipEntry(prefix, entry, zis, m);
+			processZipEntry(prefix, entry, zis, m, 0);
 			zis.closeEntry();
 			entry = zis.getNextEntry();
 		}

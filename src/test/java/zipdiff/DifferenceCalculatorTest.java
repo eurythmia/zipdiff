@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
@@ -27,7 +28,7 @@ import zipdiff.output.XmlBuilder;
  * @author jastewart
  */
 public class DifferenceCalculatorTest extends TestCase {
-	private static String ENTRYA = "A";
+	private static String ENTRY_A = "A";
 
     public static final String SYSTEM_TMP_DIR_PROPERTY = "java.io.tmpdir";
 
@@ -45,7 +46,7 @@ public class DifferenceCalculatorTest extends TestCase {
 
 	private static String testJarOneEntryAContentsChangedFilename;
 
-	{
+	static {
 		testDirPathName = System.getProperty(SYSTEM_TMP_DIR_PROPERTY);
 		if (testDirPathName == null) {
 			testDirPathName = File.separator + "temp" + TEST_DIR_POSTFIX;
@@ -65,21 +66,21 @@ public class DifferenceCalculatorTest extends TestCase {
 	public void createJarOneEntryA1() throws IOException {
 		//  create a jar file with no duplicates
 		File testDir = new File(testDirPathName);
-		testDir.mkdirs();
+		assertNotNull(testDir.mkdirs());
 		JarOutputStream testJarOS = new JarOutputStream(new BufferedOutputStream(new FileOutputStream(testJarOneEntryA1Filename)));
 
 		// ad an entry
-		JarEntry entry1 = new JarEntry(ENTRYA);
-		testJarOS.putNextEntry(entry1);
-		byte data1[] = new byte[2048];
-		for (int i = 0; i < data1.length; i++) {
-			data1[i] = 'a';
-		}
-		testJarOS.write(data1);
-
+        testJarOS.putNextEntry(new JarEntry(ENTRY_A));
+        testJarOS.write(getPopulatedByteArray(2048, (byte)'a'));
 		testJarOS.flush();
 		testJarOS.close();
 	}
+
+    private byte[] getPopulatedByteArray(int size, byte value) {
+        byte data1[] = new byte[size];
+        Arrays.fill(data1, value);
+        return data1;
+    }
 
 	/**
 	 * Create a jar with only one entry in it. That entry being A
@@ -90,23 +91,17 @@ public class DifferenceCalculatorTest extends TestCase {
 	public void createJarOneEntryA2() throws IOException {
 		//  create a jar file with no duplicates
 		File testDir = new File(testDirPathName);
-		testDir.mkdirs();
+		assertNotNull(testDir.mkdirs());
 		JarOutputStream testJarOS = new JarOutputStream(new BufferedOutputStream(new FileOutputStream(testJarOneEntryA2Filename)));
 
-		// ad an entry
-		JarEntry entry1 = new JarEntry(ENTRYA);
-		testJarOS.putNextEntry(entry1);
-		byte data1[] = new byte[2048];
-		for (int i = 0; i < data1.length; i++) {
-			data1[i] = 'a';
-		}
-		testJarOS.write(data1);
-
+		// add an entry
+        testJarOS.putNextEntry(new JarEntry(ENTRY_A));
+        testJarOS.write(getPopulatedByteArray(2048, (byte)'a'));
 		testJarOS.flush();
 		testJarOS.close();
 	}
 
-	/**
+    /**
 	 * Create a jar with only one entry in it. That entry being A
 	 *
 	 * @throws FileNotFoundException
@@ -115,16 +110,13 @@ public class DifferenceCalculatorTest extends TestCase {
 	public void createJarOneEntryAContentsChanged() throws IOException {
 		//  create a jar file with no duplicates
 		File testDir = new File(testDirPathName);
-		testDir.mkdirs();
+		assertNotNull(testDir.mkdirs());
 		JarOutputStream testJarOS = new JarOutputStream(new BufferedOutputStream(new FileOutputStream(testJarOneEntryAContentsChangedFilename)));
 
 		// add an entry
-		JarEntry entry1 = new JarEntry(ENTRYA);
+		JarEntry entry1 = new JarEntry(ENTRY_A);
 		testJarOS.putNextEntry(entry1);
-		byte data1[] = new byte[2048];
-		for (int i = 0; i < data1.length; i++) {
-			data1[i] = 'a';
-		}
+		byte data1[] = getPopulatedByteArray(2048, (byte)'a');
 		// set a different content so that it will come up as changed
 		data1[data1.length - 1] = 'b';
 		testJarOS.write(data1);
@@ -142,23 +134,29 @@ public class DifferenceCalculatorTest extends TestCase {
 	public void createJarOneEntryB1() throws IOException {
 		//  create a jar file with no duplicates
 		File testDir = new File(testDirPathName);
-		testDir.mkdirs();
+		assertNotNull(testDir.mkdirs());
 		JarOutputStream testJarOS = new JarOutputStream(new BufferedOutputStream(new FileOutputStream(testJarOneEntryB1Filename)));
 
-		// ad an entry
-        String ENTRYB = "B";
-        JarEntry entry1 = new JarEntry(ENTRYB);
-		testJarOS.putNextEntry(entry1);
-		byte data1[] = new byte[2048];
-		for (int i = 0; i < data1.length; i++) {
-			data1[i] = 'b';
-		}
-		testJarOS.write(data1);
-
+		// add an entry
+        testJarOS.putNextEntry(new JarEntry("B"));
+        testJarOS.write(getPopulatedByteArray(2048, (byte)'b'));
 		testJarOS.flush();
 		testJarOS.close();
 	}
 
+
+    //TODO: Write a test for no changes with filename filter that matches no files
+    //TODO: Write a test for no changes with filename filter that matches one filename
+
+    //TODO: Write a test for one change with filename filter that matches no files
+    //TODO: Write a test for one change with filenamte filter that matches that file
+
+    //TODO: Write a test for multiple changes with filename filter that matches no files
+    //TODO: Write a test for multiple changes with filename filter that matches one file
+    //TODO: Write a test for multiple changes with a filename filter that matches some files
+
+    //NOTE: no need to write a test for any number of changes with a filter that matches all files, this is the default
+    //      behaviour, and it is caught by the existing tests.
 
 	/**
 	 * Test for Differences calculateDifferences(ZipFile, ZipFile)
