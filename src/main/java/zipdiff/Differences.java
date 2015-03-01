@@ -45,19 +45,19 @@ public class Differences {
 		return filename2;
 	}
 
-	public void fileAdded(String fqn, ZipEntry ze) {
-		added.put(fqn, ze);
+	public void fileAdded(String fullFilePath, ZipEntry ze) {
+		added.put(fullFilePath, ze);
 	}
 
-	public void fileRemoved(String fqn, ZipEntry ze) {
-		removed.put(fqn, ze);
+	public void fileRemoved(String fullFilePath, ZipEntry ze) {
+		removed.put(fullFilePath, ze);
 	}
 
-	public void fileChanged(String fqn, ZipEntry z1, ZipEntry z2) {
+	public void fileChanged(String fullFilePath, ZipEntry z1, ZipEntry z2) {
 		ZipEntry[] entries = new ZipEntry[2];
 		entries[0] = z1;
 		entries[1] = z2;
-		changed.put(fqn, entries);
+		changed.put(fullFilePath, entries);
 	}
 
 	public Map<String,ZipEntry> getAdded() {
