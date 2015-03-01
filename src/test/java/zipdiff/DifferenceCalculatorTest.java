@@ -149,7 +149,7 @@ public class DifferenceCalculatorTest extends TestCase {
     //TODO: Write a test for no changes with filename filter that matches one filename
 
     //TODO: Write a test for one change with filename filter that matches no files
-    //TODO: Write a test for one change with filenamte filter that matches that file
+    //TODO: Write a test for one change with filename filter that matches that file
 
     //TODO: Write a test for multiple changes with filename filter that matches no files
     //TODO: Write a test for multiple changes with filename filter that matches one file
