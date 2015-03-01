@@ -90,7 +90,7 @@ public class Differences {
             sb.append(String.format("\t[removed] %s\n", key));
         }
 
-        sb.append(String.format("%d file(s) changed\n", removed.size()));
+        sb.append(String.format("%d file(s) changed\n", changed.size()));
         for(String key : changed.keySet()) {
             ZipEntry[] entries = changed.get(key);
             sb.append(String.format("\t[changed] %s (size: %d : %d)\n", key, entries[0].getSize(), entries[1].getSize()));
