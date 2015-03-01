@@ -80,11 +80,11 @@ public class DifferenceCalculator {
 		if (entryName == null || fileFilterPattern == null) {
 			return false;
 		} else {
-            boolean match = fileFilterPattern.matcher(entryName).matches();
-			if (!match) {
+            boolean ignore = !fileFilterPattern.matcher(entryName).matches();
+			if (ignore) {
 				logger.log(Level.FINEST, String.format("%s does not match filter, excluding", entryName));
 			}
-			return match;
+			return ignore;
 		}
 	}
 
