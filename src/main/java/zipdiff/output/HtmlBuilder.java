@@ -1,4 +1,4 @@
-/* zipdiff is available under the terms of the
+/* zipdiff-ng is available under the terms of the
  * Apache License, version 2.0
  *
  * Link: http://www.apache.org/licenses/
