@@ -15,6 +15,7 @@ import zipdiff.Differences;
  *
  * @author Sean C. Sullivan
  */
+//TODO: get rid of this and use composition instead (will help with using properly typed input variables)
 public interface Builder {
 
 	/**

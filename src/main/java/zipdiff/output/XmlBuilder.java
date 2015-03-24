@@ -18,6 +18,7 @@ import zipdiff.Differences;
  * @author Sean C. Sullivan
  *
  */
+//TODO: replace static content with some form of templated document
 public class XmlBuilder extends AbstractBuilder {
 
 	/**

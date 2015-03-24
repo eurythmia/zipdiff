@@ -16,6 +16,8 @@ import java.util.Set;
  *
  * @author Sean C. Sullivan
  */
+
+//TODO: replace static content with a templated document
 public class HtmlBuilder extends AbstractBuilder {
 
 	/**
