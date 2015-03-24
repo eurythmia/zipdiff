@@ -31,6 +31,10 @@ public class CommandLineArgs {
     @Parameter(names = {"-filter"}, description = "regex of filenames to check")
     private String filenameFilter = ".*";
 
+    //TODO: parameter validation (only takes: "text", "html", "xml", "zip")
+    @Parameter(names = {"-format"}, description = "format of output")
+    private String outputFormat = "text";
+
     @Parameter(names = {"--help", "-help"}, help = true)
     private boolean help = false;
 
@@ -64,6 +68,10 @@ public class CommandLineArgs {
 
     public String getFilter() {
         return filenameFilter;
+    }
+
+    public String getOutputFormat() {
+        return outputFormat;
     }
 
     public boolean isHelp() {
