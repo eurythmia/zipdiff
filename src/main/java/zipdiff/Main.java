@@ -8,6 +8,7 @@ package zipdiff;
 import com.beust.jcommander.JCommander;
 import zipdiff.output.Builder;
 import zipdiff.output.BuilderFactory;
+import zipdiff.util.commandline.CommandLineArgs;
 
 import java.io.File;
 import java.util.List;

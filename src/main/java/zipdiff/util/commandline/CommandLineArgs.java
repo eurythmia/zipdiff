@@ -1,13 +1,19 @@
-package zipdiff;
+/* zipdiff-ng is available under the terms of the
+ * Apache License, version 2.0
+ *
+ * Link: http://www.apache.org/licenses/
+ */
+
+package zipdiff.util.commandline;
 
 import com.beust.jcommander.Parameter;
+import zipdiff.util.commandline.validators.OutputFormat;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommandLineArgs {
-    //TODO: parameter validation. Requires two arguments.
-    @Parameter(description = "input files")
+    @Parameter(description = "input files", arity = 2, required = true)
     private List<String> inputFiles = new ArrayList<>();
 
     @Parameter(names = {"-output"}, description = "output file")
@@ -31,8 +37,7 @@ public class CommandLineArgs {
     @Parameter(names = {"-filter"}, description = "regex of filenames to check")
     private String filenameFilter = ".*";
 
-    //TODO: parameter validation (only takes: "text", "html", "xml", "zip")
-    @Parameter(names = {"-format"}, description = "format of output")
+    @Parameter(names = {"-format"}, description = "format of output", validateWith = OutputFormat.class)
     private String outputFormat = "text";
 
     @Parameter(names = {"--help", "-help"}, help = true)

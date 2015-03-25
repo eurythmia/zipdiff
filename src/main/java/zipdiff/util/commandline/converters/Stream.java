@@ -4,7 +4,7 @@
  * Link: http://www.apache.org/licenses/
  */
 
-package zipdiff.util;
+package zipdiff.util.commandline.converters;
 
 import com.beust.jcommander.IStringConverter;
 
@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
-public class StreamConverter implements IStringConverter<PrintStream> {
+public class Stream implements IStringConverter<PrintStream> {
     @Override
     public PrintStream convert(String value){
         if ("-".equals(value)) {

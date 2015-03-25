@@ -4,14 +4,14 @@
  * Link: http://www.apache.org/licenses/
  */
 
-package zipdiff.util;
+package zipdiff.util.commandline.converters;
 
 import com.beust.jcommander.IStringConverter;
 import zipdiff.output.*;
 
-public class BuilderConverter implements IStringConverter<Builder> {
+public class Builder implements IStringConverter<zipdiff.output.Builder> {
     @Override
-    public Builder convert(String value){
+    public zipdiff.output.Builder convert(String value){
         //TODO: figure out how to inject a builder without knowing about the builders present.
         switch(value){
             case "html":
