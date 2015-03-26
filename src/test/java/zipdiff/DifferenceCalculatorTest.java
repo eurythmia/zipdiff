@@ -16,18 +16,22 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 import zipdiff.output.AbstractBuilder;
 import zipdiff.output.HtmlBuilder;
 import zipdiff.output.TextBuilder;
 import zipdiff.output.XmlBuilder;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * tests for DifferenceCalculator
  *
  * @author jastewart
  */
-public class DifferenceCalculatorTest extends TestCase {
+public class DifferenceCalculatorTest{
 	private static String ENTRY_A = "A";
 
     public static final String SYSTEM_TMP_DIR_PROPERTY = "java.io.tmpdir";
@@ -162,6 +166,7 @@ public class DifferenceCalculatorTest extends TestCase {
 	 * Test for Differences calculateDifferences(ZipFile, ZipFile)
 	 * with the same file - no differences should be found
 	 */
+    @Test
 	public void testCalculateDifferencesSameZip() throws IOException {
 		createJarOneEntryA1();
 		DifferenceCalculator calc = new DifferenceCalculator(testJarOneEntryA1Filename, testJarOneEntryA1Filename);
@@ -181,6 +186,7 @@ public class DifferenceCalculatorTest extends TestCase {
 	/**
 	 * Test for Differences calculateDifferences(ZipFile, ZipFile)
 	 */
+    @Test
 	public void testCalculateDifferencesZipsSameEntries() throws IOException {
 		createJarOneEntryA1();
 		createJarOneEntryA2();
@@ -202,6 +208,7 @@ public class DifferenceCalculatorTest extends TestCase {
 	 * Test that the differences between two zips with A in one and B in the second.
 	 * A will have been removed and B will have been added.
 	 */
+    @Test
 	public void testCalculateDifferencesZipsDifferentEntries() throws IOException {
 		createJarOneEntryA1();
 		createJarOneEntryB1();
@@ -225,6 +232,7 @@ public class DifferenceCalculatorTest extends TestCase {
 	 * Test that the differences between two zips with A in one and A in the second with different content.
 	 * A will have been removed and B will have been added.
 	 */
+    @Test
 	public void testCalculateDifferencesZipsSameEntriesDifferentContent() throws IOException {
 		createJarOneEntryA1();
 		createJarOneEntryAContentsChanged();
