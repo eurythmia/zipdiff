@@ -7,13 +7,14 @@
 package zipdiff.util.commandline;
 
 import com.beust.jcommander.Parameter;
+import zipdiff.util.commandline.validators.InputFiles;
 import zipdiff.util.commandline.validators.OutputFormat;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CommandLineArgs {
-    @Parameter(description = "input files", arity = 2, required = true)
+    @Parameter(description = "input files", arity = 2, required = true, validateWith = InputFiles.class)
     private List<String> inputFiles = new ArrayList<>();
 
     @Parameter(names = {"-output"}, description = "output file")
