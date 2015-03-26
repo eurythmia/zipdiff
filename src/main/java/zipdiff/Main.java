@@ -45,6 +45,10 @@ public class Main {
         calc.useTimestamps(cliArgs.useTStamp());
         calc.setFilenameFilter(cliArgs.getFilter());
 
+        if(cliArgs.getNoAction()) {
+            return;
+        }
+
         Differences d = calc.getDifferences();
         // TODO: use File instead of passing down strings ... Stringly typed vars are bad
         writeOutputFile(cliArgs.getOutputFile(), cliArgs.getOutputPrefixesToSkip(), d);

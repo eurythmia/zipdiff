@@ -40,6 +40,9 @@ public class CommandLineArgs {
     @Parameter(names = {"-format"}, description = "format of output", validateWith = OutputFormat.class)
     private String outputFormat = "text";
 
+    @Parameter(names = {"-n", "-noAction"}, description = "no action")
+    private boolean noAction = false;
+
     @Parameter(names = {"--help", "-help"}, help = true)
     private boolean help = false;
 
@@ -77,6 +80,10 @@ public class CommandLineArgs {
 
     public String getOutputFormat() {
         return outputFormat;
+    }
+
+    public boolean getNoAction() {
+        return noAction;
     }
 
     public boolean isHelp() {
